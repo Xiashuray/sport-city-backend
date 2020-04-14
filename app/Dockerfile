@@ -1,6 +1,6 @@
 FROM golang:1.14.1
 
-WORKDIR ${GOPATH}src/github.com/sport-city-backend
+WORKDIR ${GOPATH}src/github.com/sport-city-backend/app
 
 COPY go.mod go.sum ./
 

@@ -1,25 +1,69 @@
-# Use root/example as user/password credentials
 version: '3'
-
 services:
+  # nginx:
+  #   build: 
+  #     context: web
+  #     dockerfile: Dockerfile
+  #   ports: 
+  #     - "80:80"
+  #     # - "443:443"
+  #   networks: 
+  #     - nginx-go
+  #   depends_on:
+  #     - app
+  #   container_name: nginx
+  #   deploy:
+  #     replicas: 1
+  #     update_config:
+  #       parallelism: 2
+  #       delay: 10s
+  #     restart_policy:
+  #       condition: on-failure
 
-  mongo:
-    image: mongo:latest
+  mongodb:
+    build:
+      context: db 
+      dockerfile: Dockerfile
     restart: always
+    networks:
+      - mongo-go
     ports: 
         - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-      
+    container_name: mongo
+    volumes:
+      - mongodb-data:/data/db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
   app:
     build:
-      context: . # Use an image built from the specified dockerfile in the current directory.
+      context: app 
       dockerfile: Dockerfile
+    networks:
+      - mongo-go
+      # - nginx-go
     ports: 
       - "8080:8080"
+    depends_on:
+      - mongodb
     restart: always
+    container_name: app
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
     
-    
+networks:
+  mongo-go:
+  # nginx-go:
+volumes:
+  mongodb-data:
 

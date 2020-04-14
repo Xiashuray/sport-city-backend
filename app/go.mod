@@ -1,4 +1,4 @@
-module github.com/sport-city-backend
+module main.go
 
 go 1.14
 

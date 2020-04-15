@@ -5,12 +5,15 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sport-city-backend/app/routes"
+
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", DoHealthCheck)
+	router.HandleFunc("/test", routes.Test)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

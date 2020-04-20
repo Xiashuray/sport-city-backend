@@ -20,15 +20,25 @@ func (g Near_platfroms) Set_page_and_tagging() (model.Page, bson.M) {
 	_ = json.NewDecoder(g.d.R.Body).Decode(&page)
 
 	filtre := bson.M{}
-	if len(page.Tag) == 0 {
-		items := bson.A{}
-		for _, item := range page.Tag {
-			items = append(items, item)
-		}
-		filtre = bson.M{"tag": bson.M{"$all": bson.A{items}}}
-		if len(page.Location.Coordinates) != 0 {
+	if len(page.Location.Coordinates) != 0 {
+		filtre =
+			bson.M{
+				"location": bson.M{
+					"$near": bson.M{
+						"$geometry":    page.Location,
+						"$maxDistance": page.Distance,
+					},
+				},
+			}
+
+		if len(page.Tag) != 0 {
+			items := bson.A{}
+			for _, item := range page.Tag {
+				items = append(items, item)
+			}
 			filtre =
 				bson.M{
+					"tag": bson.M{"$all": items},
 					"location": bson.M{
 						"$near": bson.M{
 							"$geometry":    page.Location,

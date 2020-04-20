@@ -42,21 +42,14 @@ func Request_db_avg(page model.Page, filtre bson.M, options *options.AggregateOp
 	client := auth_db()
 
 	coll := client.Database("sportcity").Collection("platfroms")
-
+	testavg := bson.A{}
 	items := bson.A{}
-	if len(page.Tag) != 0 {
-		for _, item := range page.Tag {
-			items = append(items, item)
-		}
-
-	}
-	testavg := bson.A{
+	testavg = bson.A{
 		bson.M{
 			"$match": bson.M{
 				"rating.eval": bson.M{
 					"$gte": 0,
 				},
-				"tag": bson.M{"$all": items},
 			},
 		},
 		bson.M{
@@ -71,6 +64,33 @@ func Request_db_avg(page model.Page, filtre bson.M, options *options.AggregateOp
 		bson.M{
 			"$limit": page.End,
 		},
+	}
+	if len(page.Tag) != 0 {
+		for _, item := range page.Tag {
+			items = append(items, item)
+		}
+		testavg = bson.A{
+			bson.M{
+				"$match": bson.M{
+					"rating.eval": bson.M{
+						"$gte": 0,
+					},
+					"tag": bson.M{"$all": items},
+				},
+			},
+			bson.M{
+				"$sort": bson.M{
+					"rating.eval": -1,
+				},
+			},
+
+			bson.M{
+				"$skip": page.Start,
+			},
+			bson.M{
+				"$limit": page.End,
+			},
+		}
 	}
 
 	cur, _ := coll.Aggregate(context.TODO(), testavg, options)
@@ -94,4 +114,16 @@ func Request_db(r *http.Request) {
 
 	_ = json.NewDecoder(r.Body).Decode(&platfrom)
 	coll.InsertOne(context.TODO(), platfrom)
+}
+
+func Request_many_db(r *http.Request) {
+
+	clietn := auth_db()
+	coll := clietn.Database("sportcity").Collection("platfroms")
+
+	var data []interface{}
+	platfrom := []model.Platfroms{}
+
+	_ = json.NewDecoder(r.Body).Decode(&platfrom)
+	coll.InsertMany(context.TODO(), data)
 }

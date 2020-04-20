@@ -7,7 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sport-city-backend/app/routes"
-	items_public "github.com/sport-city-backend/app/routes/item/public"
+
+	"github.com/sport-city-backend/app/routes/item/create"
 	lists_private "github.com/sport-city-backend/app/routes/lists/private"
 	lists_public "github.com/sport-city-backend/app/routes/lists/public"
 )
@@ -16,7 +17,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", DoHealthCheck)
 	router.HandleFunc("/token/new/{id}", routes.GetTokenServer).Methods("POST")
-	router.HandleFunc("/add", items_public.Response_create_item).Methods("POST")
+	router.HandleFunc("/add", create.Response_create_item).Methods("POST")
 	router.HandleFunc("/platfrom/news", lists_public.Response_News).Methods("GET")
 	router.HandleFunc("/platfrom/best", lists_public.Response_best).Methods("GET")
 	router.HandleFunc("/platfrom/near", lists_public.Response_Near).Methods("GET")

@@ -9,6 +9,8 @@ import (
 	"github.com/sport-city-backend/app/routes"
 
 	"github.com/sport-city-backend/app/routes/item/create"
+	"github.com/sport-city-backend/app/routes/item/deletion"
+	"github.com/sport-city-backend/app/routes/item/interactions"
 	lists_private "github.com/sport-city-backend/app/routes/lists/private"
 	lists_public "github.com/sport-city-backend/app/routes/lists/public"
 )
@@ -18,6 +20,10 @@ func main() {
 	router.HandleFunc("/", DoHealthCheck)
 	router.HandleFunc("/token/new/{id}", routes.GetTokenServer).Methods("POST")
 	router.HandleFunc("/add", create.Response_create_item).Methods("POST")
+	router.HandleFunc("/del", deletion.Response_delete_item).Methods("POST")
+	router.HandleFunc("/ptafrom/sub", interactions.Response_follow_item).Methods("POST")
+	router.HandleFunc("/ptafrom/view", interactions.Response_view_item).Methods("POST")
+	router.HandleFunc("/ptafrom/rating", interactions.Response_Assessment_item).Methods("POST")
 	router.HandleFunc("/platfrom/news", lists_public.Response_News).Methods("GET")
 	router.HandleFunc("/platfrom/best", lists_public.Response_best).Methods("GET")
 	router.HandleFunc("/platfrom/near", lists_public.Response_Near).Methods("GET")

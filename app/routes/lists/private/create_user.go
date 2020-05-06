@@ -20,9 +20,9 @@ func (g Create_user_platfroms) Set_page_and_tagging() (model.Page, bson.M) {
 	_ = json.NewDecoder(g.d.R.Body).Decode(&page)
 
 	filtre := bson.M{}
-	if len(page.NameCreate) != 0 {
+	if len(page.CreateId) != 0 {
 
-		filtre = bson.M{"nameCreate": page.NameCreate}
+		filtre = bson.M{"createId": page.CreateId}
 
 	}
 	return page, filtre

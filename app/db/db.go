@@ -47,14 +47,14 @@ func Request_db_avg(page model.Page, filtre bson.M, options *options.AggregateOp
 	testavg = bson.A{
 		bson.M{
 			"$match": bson.M{
-				"rating.eval": bson.M{
+				"rating.info.eval": bson.M{
 					"$gte": 0,
 				},
 			},
 		},
 		bson.M{
 			"$sort": bson.M{
-				"rating.eval": -1,
+				"rating.info.eval": -1,
 			},
 		},
 
@@ -72,7 +72,7 @@ func Request_db_avg(page model.Page, filtre bson.M, options *options.AggregateOp
 		testavg = bson.A{
 			bson.M{
 				"$match": bson.M{
-					"rating.eval": bson.M{
+					"rating.info.eval": bson.M{
 						"$gte": 0,
 					},
 					"tag": bson.M{"$all": items},
@@ -80,7 +80,7 @@ func Request_db_avg(page model.Page, filtre bson.M, options *options.AggregateOp
 			},
 			bson.M{
 				"$sort": bson.M{
-					"rating.eval": -1,
+					"rating.info.eval": -1,
 				},
 			},
 
@@ -116,14 +116,7 @@ func Request_db(r *http.Request) {
 	coll.InsertOne(context.TODO(), platfrom)
 }
 
-func Request_many_db(r *http.Request) {
-
+func Request_update() *mongo.Collection {
 	clietn := auth_db()
-	coll := clietn.Database("sportcity").Collection("platfroms")
-
-	var data []interface{}
-	platfrom := []model.Platfroms{}
-
-	_ = json.NewDecoder(r.Body).Decode(&platfrom)
-	coll.InsertMany(context.TODO(), data)
+	return clietn.Database("sportcity").Collection("platfroms")
 }
